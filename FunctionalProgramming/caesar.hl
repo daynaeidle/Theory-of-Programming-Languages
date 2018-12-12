@@ -1,0 +1,29 @@
+import Data.Char
+import Prelude
+
+--encrypt a string
+encrypt :: String -> Int -> String
+--map each char in a string to a shifted char using shift char function
+encrypt str shiftVal = map (flip shiftChar $ shiftVal) (map toUpper str)
+--decrypt a string
+decrypt :: String -> Int -> String
+decrypt str shiftVal = encrypt str (shiftVal * (-1))
+--solve for all cases of encryption from maxshiftvalue to 0
+--continue calling solve until it reaches 0
+solve :: Int -> String -> IO ()
+solve maxShiftValue str  
+	| maxShiftValue > 1 = do
+	putStrLn (show maxShiftValue ++ ": " ++ encrypt str maxShiftValue)
+        solve (maxShiftValue-1) str
+    | otherwise = putStrLn (show maxShiftValue ++ ": " ++ encrypt str maxShiftValue)
+--shift character a specific amount -- don't do anything for spaces 
+-- and deal with overflow/wraparound
+shiftChar :: Char -> Int -> Char
+shiftChar char shiftVal | isAlpha char = chr ((((ord char) - ord 'A' + shiftVal) `mod` 26) + ord 'A')
+                        | otherwise = char
+main :: IO ()
+main = do
+    putStrLn ("Original: This is my last test")
+    putStrLn ("Encrypted: " ++ encrypt "This is my last test" 2)
+    putStrLn ("Decrypted: " ++ decrypt (encrypt "This is my last test" 2) 2)
+    solve 26 "YAY" 
