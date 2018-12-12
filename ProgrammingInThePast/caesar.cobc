@@ -1,0 +1,50 @@
+identification division.
+program-id. cipher.
+
+data division.
+    working-storage section.
+    01 originalStr pic X(255) value 'I HATE COBOL'.
+    01 solveStr pic X(255) value 'HAL'.
+    01 shiftAmount pic 9(2) value 8.
+    01 maxShiftValue binary pic 9(2) value 25.
+    01 orgChars pic x(52).
+    01 newChars pic x(52).
+    01 charTable.
+        02 pic x(26) value "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
+        02 pic x(26) value "ABCDEFGHIJKLMNOPQRSTUVWXYZ".
+    
+
+procedure division.
+    begin.
+    display function concatenate("Original" ": " originalStr)
+    perform encrypt
+    display function concatenate("Encrypted" ": " originalStr)
+    perform decrypt
+    display function concatenate("Decrypted" ": " originalStr)
+    set shiftAmount to 26
+    move 'MILK' to originalStr
+    perform solve until shiftAmount = 0
+    stop run.
+    
+    encrypt.
+    move charTable (1 : 26) to orgChars
+    move charTable (1 + shiftAmount : 26) to newChars
+           inspect originalStr converting orgChars
+               to newChars
+    .
+    
+    decrypt.
+    move charTable (1 + shiftAmount : 26) to orgChars
+    move charTable (1 : 26) to newChars
+           inspect originalStr converting orgChars
+               to newChars
+    .
+    
+    solve.
+    move 'MILK' to originalStr
+    perform encrypt
+    display function concatenate(shiftAmount ": " originalStr)
+    subtract 1 from shiftAmount
+    .
+    
+end program cipher.
